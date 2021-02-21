@@ -75,6 +75,26 @@ func (p *playlist) previousSong() *song {
 	return p.nowPlaying
 }
 
+func (p *playlist) deleteSong(index int) {
+	currentNode := p.head
+	if currentNode == nil {
+		fmt.Println("Playlist is empty.")
+	} else {
+		for i := 0; i < index; i++ {
+			if i == index-1 {
+				currentNode.previous.next = currentNode.next
+				if p.nowPlaying == currentNode {
+					p.nowPlaying = nil
+				}
+			} else {
+				currentNode = currentNode.next
+			}
+
+		}
+	}
+
+}
+
 func main() {
 	playlist := "new Playlist"
 	myPlaylist := createPlaylist(playlist)
@@ -96,9 +116,15 @@ func main() {
 	fmt.Printf("Now playing: %s by %s\n", myPlaylist.nowPlaying.name, myPlaylist.nowPlaying.artist)
 	fmt.Println()
 
+	fmt.Println("Deleteing song")
+	myPlaylist.deleteSong(2)
+
 	fmt.Println("Changing to next song")
 	myPlaylist.nextSong()
 	fmt.Printf("Now playing: %s by %s\n", myPlaylist.nowPlaying.name, myPlaylist.nowPlaying.artist)
+	fmt.Println()
+
+	myPlaylist.showAllSongs()
 	fmt.Println()
 
 	myPlaylist.previousSong()
