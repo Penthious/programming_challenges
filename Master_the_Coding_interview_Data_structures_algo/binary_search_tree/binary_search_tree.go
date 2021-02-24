@@ -51,7 +51,6 @@ func (b *bst) lookup(value int) (d *data, left bool, right bool) {
 		}
 
 		if right && currentNode.Right != nil {
-			fmt.Println(b.Root)
 			currentNode = currentNode.Right
 		} else if right && currentNode.Right == nil {
 			return currentNode, false, true
