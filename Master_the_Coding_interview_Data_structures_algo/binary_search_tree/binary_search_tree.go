@@ -22,7 +22,7 @@ func (b *bst) insert(value int) {
 		b.Root = data
 		return
 	}
-	node, left, right := b.lookup(value)
+	node, left, right, _ := b._getNode(value)
 	if node.Value == value {
 		fmt.Println("No dupes allowed")
 		return
@@ -35,40 +35,66 @@ func (b *bst) insert(value int) {
 	}
 }
 
-func (b *bst) lookup(value int) (d *data, left bool, right bool) {
+func (b *bst) lookup(value int) (d *data) {
 	if b.isEmpty() {
-		return &data{}, false, false
+		return &data{}
 	}
+	node, _, _, _ := b._getNode(value)
+
+	if node.Value != value {
+		return &data{}
+	}
+
+	return node
+}
+
+func (b *bst) _getNode(value int) (d *data, left bool, right bool, previous *data) {
 	finished := false
 
 	currentNode := b.Root
+	p := &data{}
 	for !finished {
 		right := currentNode.Value < value
 		left := currentNode.Value > value
 
 		if currentNode.Value == value {
-			return currentNode, false, false
+			return currentNode, false, false, p
 		}
 
 		if right && currentNode.Right != nil {
+			p = currentNode
 			currentNode = currentNode.Right
 		} else if right && currentNode.Right == nil {
-			return currentNode, false, true
+			return currentNode, false, true, &data{}
 		} else if left && currentNode.Left != nil {
+			p = currentNode
 			currentNode = currentNode.Left
 
 		} else if left && currentNode.Left == nil {
-			return currentNode, true, false
+			return currentNode, true, false, &data{}
 		} else {
 			finished = true
 		}
 
 	}
 
-	return &data{}, false, false
+	return &data{}, false, false, &data{}
+
 }
 
-func (b *bst) remove(value int) {}
+func (b *bst) remove(value int) {
+	if b.isEmpty() {
+		return
+	}
+
+	// node, _, _, previous := b.lookup(value)
+
+	// previous 7
+	// node.left 10
+	// node.right8
+	// if
+
+}
 
 func (b *bst) isEmpty() bool {
 	if b.Root == nil {
@@ -80,13 +106,16 @@ func (b *bst) isEmpty() bool {
 func main() {
 	bst := newBST()
 	fmt.Println(bst.isEmpty())
-	bst.insert(10)
-	fmt.Println(bst.isEmpty())
+	bst.insert(9)
+	bst.insert(4)
+	bst.insert(6)
+	bst.insert(20)
+	bst.insert(170)
+	bst.insert(170)
 	bst.insert(15)
-	bst.insert(13)
-	bst.insert(14)
-	bst.insert(14)
-	fmt.Println(bst.Root.Right.Left.Right)
-	fmt.Println(bst.lookup(14))
+	bst.insert(1)
+	fmt.Println(bst.Root.Left.Left)
+	fmt.Println()
+	fmt.Println(bst.lookup(30))
 
 }
