@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type data struct {
 	Value int
@@ -58,7 +61,7 @@ func (b *bst) _getNode(value int) (d *data, left bool, right bool, previous *dat
 		left := currentNode.Value > value
 
 		if currentNode.Value == value {
-			return currentNode, false, false, p
+			return currentNode, p.Left == currentNode, p.Right == currentNode, p
 		}
 
 		if right && currentNode.Right != nil {
@@ -87,13 +90,56 @@ func (b *bst) remove(value int) {
 		return
 	}
 
-	// node, _, _, previous := b.lookup(value)
+	node, left, right, previous := b._getNode(value)
+
+	if node.Left == nil && node.Right == nil {
+		if left {
+			previous.Left = nil
+		}
+		if right {
+			previous.Right = nil
+		}
+	} else if node.Right == nil {
+		n, p := b._traversalLeft(node, previous)
+		fmt.Println(n)
+		n.Left = node.Left
+		n.Right = node.Right
+		p.Left = nil
+		if left {
+			previous.Left = n
+		}
+		if right {
+			previous.Right = n
+		}
+	} else if node.Left != nil {
+		n, p := b._traversalLeft(node.Right, node)
+		fmt.Println(n)
+		p.Left = nil
+		n.Left = node.Left
+		n.Right = node.Right
+		if left {
+			previous.Left = n
+		}
+		if right {
+			previous.Right = n
+		}
+	} else {
+
+	}
 
 	// previous 7
 	// node.left 10
 	// node.right8
 	// if
 
+}
+
+func (b *bst) _traversalLeft(n *data, p *data) (node *data, previous *data) {
+	if n.Left == nil {
+		return n, p
+	}
+
+	return b._traversalLeft(n.Left, node)
 }
 
 func (b *bst) isEmpty() bool {
@@ -114,8 +160,11 @@ func main() {
 	bst.insert(170)
 	bst.insert(15)
 	bst.insert(1)
-	fmt.Println(bst.Root.Left.Left)
+	// fmt.Println(bst.Root.Left.Left)
 	fmt.Println()
-	fmt.Println(bst.lookup(30))
+	// fmt.Println(bst)
+	bst.remove(20)
+	b, _ := json.Marshal(bst)
+	fmt.Println(string(b))
 
 }
