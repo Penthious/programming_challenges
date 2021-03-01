@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"encoding/json"
 	"fmt"
 )
@@ -13,6 +14,7 @@ type data struct {
 
 type bst struct {
 	Root *data
+	DFS  []int
 }
 
 func newBST() *bst {
@@ -149,6 +151,81 @@ func (b *bst) isEmpty() bool {
 	return false
 }
 
+func (b *bst) breadthFirstSearch() []int {
+	currentNode := b.Root
+	items := []int{}
+	queue := list.New()
+
+	queue.PushBack(currentNode)
+
+	for queue.Len() > 0 {
+		front := queue.Front()
+		currentNode := front.Value.(*data)
+		queue.Remove(front)
+		items = append(items, currentNode.Value)
+
+		if currentNode.Left != nil {
+			queue.PushBack(currentNode.Left)
+		}
+
+		if currentNode.Right != nil {
+			queue.PushBack(currentNode.Right)
+		}
+	}
+	return items
+}
+
+func (b *bst) depthFirstSearchInOrder() []int {
+	b.DFS = []int{}
+	return b._traverseInOrder(b.Root)
+}
+func (b *bst) depthFirstSearchPostOrder() []int {
+	b.DFS = []int{}
+	return b._traversePostOrder(b.Root)
+}
+func (b *bst) depthFirstSearchPreOrder() []int {
+	b.DFS = []int{}
+	return b._traversePreOrder(b.Root)
+}
+
+func (b *bst) _traversePreOrder(node *data) []int {
+	b.DFS = append(b.DFS, node.Value)
+	if node.Left != nil {
+		b._traversePreOrder(node.Left)
+	}
+
+	if node.Right != nil {
+		b._traversePreOrder(node.Right)
+	}
+	return b.DFS
+}
+
+func (b *bst) _traverseInOrder(node *data) []int {
+	if node.Left != nil {
+		b._traverseInOrder(node.Left)
+	}
+
+	b.DFS = append(b.DFS, node.Value)
+
+	if node.Right != nil {
+		b._traverseInOrder(node.Right)
+	}
+	return b.DFS
+}
+
+func (b *bst) _traversePostOrder(node *data) []int {
+	if node.Left != nil {
+		b._traversePostOrder(node.Left)
+	}
+
+	if node.Right != nil {
+		b._traversePostOrder(node.Right)
+	}
+
+	b.DFS = append(b.DFS, node.Value)
+	return b.DFS
+}
+
 func main() {
 	bst := newBST()
 	fmt.Println(bst.isEmpty())
@@ -157,14 +234,17 @@ func main() {
 	bst.insert(6)
 	bst.insert(20)
 	bst.insert(170)
-	bst.insert(170)
 	bst.insert(15)
 	bst.insert(1)
 	// fmt.Println(bst.Root.Left.Left)
 	fmt.Println()
 	// fmt.Println(bst)
-	bst.remove(20)
+	// bst.remove(20)
 	b, _ := json.Marshal(bst)
 	fmt.Println(string(b))
+	fmt.Println()
+	fmt.Println(bst.depthFirstSearchInOrder())
+	fmt.Println(bst.depthFirstSearchPreOrder())
+	fmt.Println(bst.depthFirstSearchPostOrder())
 
 }
