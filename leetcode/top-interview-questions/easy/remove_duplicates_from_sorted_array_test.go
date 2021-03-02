@@ -10,14 +10,12 @@ import (
 func TestRemoveDuplicatesFromSortedArray(t *testing.T) {
 	nums := []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
 
-	removeDuplicatesFromSortedArray(nums)
-	assert.Equal(t, 4, len(nums))
-	assert.Equal(t, []int{0, 1, 2, 3, 4}, nums)
+	assert.Equal(t, []int{0, 1, 2, 3, 4}, removeDuplicatesFromSortedArray(nums))
 }
 
-func removeDuplicatesFromSortedArray(nums []int) int {
+func removeDuplicatesFromSortedArray(nums []int) []int {
 	if len(nums) <= 1 {
-		return len(nums)
+		return nums
 	}
 
 	working := true
@@ -26,7 +24,7 @@ func removeDuplicatesFromSortedArray(nums []int) int {
 	for working {
 		working = false
 		if index+1 >= len(nums) {
-			return len(nums)
+			return nums
 		}
 
 		if nums[index] == nums[index+1] {
@@ -38,5 +36,5 @@ func removeDuplicatesFromSortedArray(nums []int) int {
 		}
 
 	}
-	return len(nums)
+	return nums
 }
